@@ -1,96 +1,78 @@
-import React from "react";
-import { useFormik } from "formik";
 import { Button, TextField } from "@mui/material";
-import { z } from "zod";
-import { toFormikValidationSchema } from "zod-formik-adapter";
+import { useForm } from "@tanstack/react-form";
 
-// Define the shape of the form values using Zod
-const validationSchema = z.object({
-  email: z
-    .string()
-    .email("Invalid email address")
-    .nonempty("Email is required"),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .nonempty("Password is required"),
-});
+import { formStyles, schema } from "./login-form.const";
+import { LoginFormData } from "./login-form.types";
 
-// Define the initial values for the form
-const initialValues = {
-  email: "",
-  password: "",
+type Props = {
+  onSubmit: (props: { value: LoginFormData }) => Promise<unknown>;
 };
 
-// Define the props for the LoginForm component
-interface LoginFormProps {
-  onCancel: () => void; // Callback for cancel button
-  onSubmit: (values: typeof initialValues) => Promise<void>; // Callback for form submission
-}
-
-export const LoginForm: React.FC<LoginFormProps> = ({ onCancel, onSubmit }) => {
-  // Initialize useFormik hook with Zod validation schema
-  const formik = useFormik({
-    initialValues,
-    validationSchema: toFormikValidationSchema(validationSchema), // Use zod-formik-adapter here
-    onSubmit, // Pass onSubmit as a reference
+export const LoginForm = ({ onSubmit }: Props) => {
+  const form = useForm({
+    defaultValues: { email: "", password: "" } as LoginFormData,
+    validators: { onSubmit: schema },
+    onSubmit,
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      {/* Email Field */}
-      <div>
-        <TextField
-          id="email"
-          name="email"
-          label="Email"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
-      </div>
+    <form
+      style={formStyles}
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+    >
+      <form.Field name="email">
+        {(field) => (
+          <TextField
+            fullWidth
+            autoFocus
+            name="email"
+            autoComplete="email"
+            variant="outlined"
+            margin="normal"
+            label="Email"
+            defaultValue={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+            error={Boolean(field.state.meta.errors.length)}
+            helperText={field.state.meta.errors[0]?.message}
+          />
+        )}
+      </form.Field>
 
-      {/* Password Field */}
-      <div>
-        <TextField
-          id="password"
-          name="password"
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-        />
-      </div>
+      <form.Field name="password">
+        {(field) => (
+          <TextField
+            fullWidth
+            type="password"
+            autoComplete="current-password"
+            variant="outlined"
+            margin="normal"
+            label="Password"
+            defaultValue={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+            error={Boolean(field.state.meta.errors.length)}
+            helperText={field.state.meta.errors[0]?.message}
+          />
+        )}
+      </form.Field>
 
-      {/* Buttons */}
-      <Button
-        type="submit"
-        disabled={formik.isSubmitting}
-        variant="contained"
-        color="primary"
-        style={{ marginRight: "8px" }}
-      >
-        Login
-      </Button>
-      <Button
-        type="button"
-        onClick={onCancel}
-        variant="outlined"
-        color="secondary"
-      >
-        Cancel
-      </Button>
+      <form.Subscribe selector={(state) => state.isSubmitting}>
+        {(isSubmitting) => (
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isSubmitting}
+          >
+            Login
+          </Button>
+        )}
+      </form.Subscribe>
     </form>
   );
 };

@@ -5,6 +5,10 @@ This is test task from brother employer. Demands:
 - [Swagger](https://dist.nd.ru/docs#/%D0%90%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F/AuthController_getMe)
 - [Figma](https://www.figma.com/design/054XC8D1dxqNcuoJaZM8av/%D0%A2%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B5-%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B0-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5?node-id=0-1&p=f)
 
+# TODO
+
+* Add `<input type="hidden" name="_csrf" value="{{csrfToken}}">` to login and register forms?
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
