@@ -1,18 +1,11 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../entities/user";
+import { Link, useNavigate } from "react-router-dom";
 import { RegisterForm, RegisterFormData } from "./features";
 import { RegDto, useRegisterMutation } from "../../shared/api";
 
 export const Register = () => {
   const navigate = useNavigate();
 
-  const user = useAuthStore((state) => state.user);
-
   const { mutateAsync } = useRegisterMutation();
-
-  if (user) {
-    return <Navigate to="/notes" replace />;
-  }
 
   const onSubmit = async (props: { value: RegisterFormData }) => {
     const dto: RegDto = {

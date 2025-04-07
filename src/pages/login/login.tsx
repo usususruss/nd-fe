@@ -1,20 +1,14 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { useAuthStore } from "../../entities/user";
 import { LoginForm, LoginFormData } from "./features";
 import { useLoginMutation } from "../../shared/api";
 
 export const Login = () => {
   const navigate = useNavigate();
 
-  const user = useAuthStore((state) => state.user);
   // const login = useAuthStore((s) => s.login);
 
   const { mutateAsync } = useLoginMutation();
-
-  if (user) {
-    return <Navigate to="/notes" replace />;
-  }
 
   const onSubmit = async ({ value }: { value: LoginFormData }) => {
     try {
